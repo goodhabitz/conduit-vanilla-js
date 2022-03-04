@@ -1,4 +1,5 @@
 import {layoutComponents} from "../components/layout/index";
+import {CExampleComponent} from "../../example.comp";
 import {ArticleComponent} from "../components/article.comp";
 import {HomeComponent} from "../pages/home.comp";
 import {CLoginComponent} from "../pages/login.comp";
@@ -11,10 +12,8 @@ import {EditorComponent} from "../pages/editor.comp";
 import {SettingsComponent} from "../pages/settings.comp";
 import {PopularTagsComponent} from "../components/popular-tags.comp";
 import {CommentsContainerComponent} from "../components/comments-container.comp";
-import {UserInfoComponent} from "../components/user-info.comp";
 import {ArticlePreviewBannerComponent} from "../components/article-preview-banner";
 import {CommentCreateComponent} from "../components/comment-create.comp";
-
 export class Core {
     constructor() {
         if (!Core.inst) {
@@ -36,6 +35,10 @@ Core.inst = null;
 
 const components = [
     ...layoutComponents,
+    {
+        tagName: 'c-example',
+        component: CExampleComponent
+    },
     {
         tagName: 'c-article',
         component: ArticleComponent
@@ -79,10 +82,6 @@ const components = [
     {
         tagName: 'popular-tags',
         component: PopularTagsComponent
-    },
-    {
-        tagName: 'user-info',
-        component: UserInfoComponent
     },
     {
         tagName: 'article-preview-banner',

@@ -9,8 +9,10 @@ export class ProfileComponent extends HTMLElement {
         super();
         this.username = params.username;
 
+        this.followButtonHandler = this.followButtonHandler.bind(this);
         this.myArticlesButtonHandler = this.myArticlesButtonHandler.bind(this);
         this.favoritedArticlesButtonHandler = this.favoritedArticlesButtonHandler.bind(this);
+
         this.auth = Authentication.instance.auth;
     }
 
@@ -23,17 +25,48 @@ export class ProfileComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        const el = this.render();
-        this.innerHTML = el;
+        Http.instance.doGet('profiles/' + this.username, true).then(res => {
+            return res.json();
+        }).then(r => {
+            this.model = r.profile;
+            this.innerHTML = this.render();
+            this.$followButton = this.querySelector('#follow-button');
+            if (this.$followButton) {
+                this.$followButton.addEventListener('click', this.followButtonHandler);
+            }
+            this.$globalFeed = this.querySelector('#globalFeed');
+            this.$myArticlesButton = this.querySelector('#my-articles');
+            this.$favoritedArticlesButton = this.querySelector('#favorited-articles');
 
-        this.$globalFeed = this.querySelector('#globalFeed');
-        this.$myArticlesButton = this.querySelector('#my-articles');
-        this.$favoritedArticlesButton = this.querySelector('#favorited-articles');
+            this.$myArticlesButton.addEventListener('click', this.myArticlesButtonHandler);
+            this.$favoritedArticlesButton.addEventListener('click', this.favoritedArticlesButtonHandler);
 
-        this.$myArticlesButton.addEventListener('click', this.myArticlesButtonHandler);
-        this.$favoritedArticlesButton.addEventListener('click', this.favoritedArticlesButtonHandler);
+            this.fetchArticles('?author=' + this.username);
+        });
+    }
 
-        this.fetchArticles('?author=' + this.username);
+    disconnectedCallback () {
+        if (this.$followButton) {
+            this.$followButton.removeEventListener('click', this.followButtonHandler);
+        }
+    }
+
+    followButtonHandler(e) {
+        if (this.model.following) {
+            Http.instance.doDelete('profiles/' + this.model.username + '/follow', true).then(r => {
+                this.model = r.profile;
+                this.$followButton.innerHTML = this.renderFollowButton();
+            });
+        } else {
+            Http.instance.doPost('profiles/' + this.model.username + '/follow', JSON.stringify({}), true).then(r => {
+                this.model = r.profile;
+                this.$followButton.innerHTML = this.renderFollowButton();
+            });
+        }
+    }
+
+    renderFollowButton() {
+        return `<i class="ion-plus-round"></i>${this.model.following ? 'Unfollow' : 'Follow'} ${this.username}`;
     }
 
     myArticlesButtonHandler(e) {
@@ -85,40 +118,49 @@ export class ProfileComponent extends HTMLElement {
 
     render() {
         return `
-               <div class="profile-page">
-                  <user-info username="${this.username}"></user-info>
-                 
-                
+            <div class="profile-page">
+                <div class="user-info">
                   <div class="container">
                     <div class="row">
-                
                       <div class="col-xs-12 col-md-10 offset-md-1">
-                        <div class="articles-toggle">
-                          <ul class="nav nav-pills outline-active">
-                            <li class="nav-item">
-                              <a id="my-articles" class="nav-link active" href="">My Articles</a>
-                            </li>
-                            <li class="nav-item">
-                              <a id="favorited-articles" class="nav-link" href="">Favorited Articles</a>
-                            </li>
-                          </ul>
-                        </div>
-                
-                        <div id="globalFeed">
-                            <div class="article-preview">
-                             Loading articles
-                            </div>
-                        </div>
-                
+                        <img id="user-img" src="${this.model.image}" class="user-img" />
+                        <h4 id="username">${this.username}</h4>
+                        <p id="bio">
+                          ${this.model.bio ? this.model.bio : ''}
+                        </p>
+                        ${!this.auth || this.username !== this.auth.username ?
+                          `<button id="follow-button" class="btn btn-sm btn-outline-secondary action-btn">
+                            ${this.renderFollowButton()}
+                          </button>` :
+                          `<a class="btn btn-sm btn-outline-secondary action-btn" href="/#/settings"><i class="ion-gear-a"></i> Edit Profile Settings</a>`
+                        }
                       </div>
-                
                     </div>
                   </div>
-                
                 </div>
-
+                <div class="container">
+                  <div class="row">
+                    <div class="col-xs-12 col-md-10 offset-md-1">
+                      <div class="articles-toggle">
+                        <ul class="nav nav-pills outline-active">
+                        <li class="nav-item">
+                          <a id="my-articles" class="nav-link active" href="">My Articles</a>
+                        </li>
+                        <li class="nav-item">
+                          <a id="favorited-articles" class="nav-link" href="">Favorited Articles</a>
+                        </li>
+                        </ul>
+                      </div>
+                      <div id="globalFeed">
+                        <div class="article-preview">
+                          Loading articles
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
         `;
     }
-
 
 }

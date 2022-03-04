@@ -36,15 +36,13 @@ export class HomeComponent extends HTMLElement {
 
         this.$globalFeed = this.querySelector('#globalFeed');
 
-        if (!this.auth) {
-            this.$yourFeedButton.parentNode.removeChild(this.$yourFeedButton);
-            this.$globalFeedButton.classList.add('active');
-            this.fetchArticles('?limit=10&offset=' + this._offset);
-        } else {
+        if (this.auth) {
             this.$yourFeedButton.addEventListener('click', this.yourFeedHandleEvent);
-            this.fetchArticles('/feed?limit=10&offset=' + this._offset, true);
+        } else {
+            this.$yourFeedButton.parentNode.removeChild(this.$yourFeedButton);
         }
 
+        this.fetchArticles('?limit=10&offset=' + this._offset);
         this.$globalFeedButton.addEventListener('click', this.globalFeedEventHandle);
 
         let popularTags = this.querySelector('popular-tags');
@@ -216,10 +214,10 @@ export class HomeComponent extends HTMLElement {
                         <div class="feed-toggle">
                             <ul id="feedOptions" class="nav nav-pills outline-active">
                                 <li class="nav-item">
-                                    <a id="your-feed" class="nav-link active" href="">Your Feed</a>
+                                    <a id="globalFeedButton" href="#" class="nav-link active">Global Feed</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="globalFeedButton" href="#" class="nav-link">Global Feed</a>
+                                    <a id="your-feed" class="nav-link" href="">Your Feed</a>
                                 </li>
                             </ul>
                         </div>

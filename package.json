@@ -4,9 +4,17 @@
   "main": "index.js",
   "repository": "https://github.com/goodhabitz/conduit-vanilla-js.git",
   "contributors": [
-    "<israelroldan@goodhabitz.com>",
+    "<admir.sabanovic@moduscreate.com>",
     "<admir_sabanovic@live.com>",
-    "<eric@esft.com>"
+    "<alonzorz@gmail.com>",
+    "<elianibaj@gmail.com>",
+    "<eric@esft.com>",
+    "<esakkiraj.tce@gmail.com>",
+    "<israelroldan@goodhabitz.com>",
+    "<Knjaz092@mail.ru>",
+    "<optik@fluffel.io>",
+    "<reinoutclaeys@gmail.com>",
+    "<sandeesh.s@gmail.com>"
   ],
   "license": "MIT",
   "scripts": {

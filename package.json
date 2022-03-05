@@ -1,11 +1,16 @@
 {
-  "name": "vanilla-web-components",
+  "name": "conduit-vanilla-js",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/criticalbh/vanilla-web-components.git",
-  "author": "<admir_sabanovic@live.com>",
+  "repository": "https://github.com/goodhabitz/conduit-vanilla-js.git",
+  "contributors": [
+    "<israelroldan@goodhabitz.com>",
+    "<admir_sabanovic@live.com>",
+    "<eric@esft.com>"
+  ],
   "license": "MIT",
   "scripts": {
+    "dev": "webpack-dev-server",
     "start": "webpack-dev-server",
     "build": "rm -rf dist && webpack --config webpack.config.prod.js",
     "prod": "cp serve.js dist/serve.js && node serve.js"
